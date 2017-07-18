@@ -47,3 +47,14 @@ function _exit {
         kill $job 2> /dev/null
     done
 }
+
+#######################################################
+# Others helpers functions
+#######################################################
+function _waitFile {
+    FILE=$1
+    while [[ ! -e "$FILE" && "$EXITING" -eq "0" ]]; do
+        _warn Waiting for the file "$FILE"
+        sleep 2
+    done
+}
