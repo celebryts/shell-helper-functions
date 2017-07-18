@@ -52,6 +52,9 @@ function _exit {
 # Others helpers functions
 #######################################################
 function _waitFile {
+    trap _sigint SIGINT SIGTERM SIGQUIT
+    trap _exit EXIT
+
     FILE=$1
     while [[ ! -e "$FILE" && "$_EXITING" -eq "0" ]]; do
         _warn Waiting for the file "$FILE"
