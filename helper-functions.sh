@@ -53,7 +53,7 @@ function _exit {
 #######################################################
 function _waitFile {
     FILE=$1
-    while [[ ! -e "$FILE" && "$EXITING" -eq "0" ]]; do
+    while [[ ! -e "$FILE" && "$_EXITING" -eq "0" ]]; do
         _warn Waiting for the file "$FILE"
         sleep 2
     done
