@@ -56,8 +56,8 @@ function _waitFile {
     trap _exit EXIT
 
     FILE=$1
-    MSG=Waiting for the file "$FILE"
-    if [ -z "$2" ]; then
+    MSG="Waiting for the file \"$FILE\""
+    if [ ! -z "$2" ]; then
         MSG=$2
     fi
 
