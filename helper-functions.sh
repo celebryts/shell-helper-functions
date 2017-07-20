@@ -56,8 +56,13 @@ function _waitFile {
     trap _exit EXIT
 
     FILE=$1
+    MSG=Waiting for the file "$FILE"
+    if [ -z "$2" ]; then
+        MSG=$2
+    fi
+
     while [[ ! -e "$FILE" && "$_EXITING" -eq "0" ]]; do
-        _warn Waiting for the file "$FILE"
+        _warn $MSG
         sleep 2
     done
 }
