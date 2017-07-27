@@ -66,3 +66,11 @@ function _waitFile {
         sleep 2
     done
 }
+function _waitForever {
+    trap _sigint SIGINT SIGTERM SIGQUIT
+    trap _exit EXIT
+
+    while [ "$_EXITING" -eq "0" ]; do
+        sleep 2
+    done
+}
