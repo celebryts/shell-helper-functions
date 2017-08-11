@@ -74,3 +74,32 @@ function _waitForever {
         sleep 2
     done
 }
+
+function _getOverriteConfigFileContent {
+    local PHP_ARRAY_VAR_NAME=\$_DOCKER_CONTAINER_OVERRIDE_CONFIG
+    local ENV_PREFIX=CELY-OVERRIDE-
+    local OVERRIDES=$(env | grep -E "$ENV_PREFIX.+")
+
+    local outputContent=""
+    for OVERRIDE in $OVERRIDES; do
+        local SHELL_ENV_NAME=$(echo $OVERRIDE | sed -r "s/=.+//")
+        local SHELL_ENV_VALUE=$(echo $OVERRIDE | sed -r "s/^.+?=//")
+        local asArray=$(echo $SHELL_ENV_NAME | sed -r "s/^$ENV_PREFIX//" | sed -r "s/,/']['/g")
+        asArray="$PHP_ARRAY_VAR_NAME['$asArray']=$SHELL_ENV_VALUE;"
+
+        outputContent="$outputContent\n $asArray"
+    done
+
+    local outputTempFile=$(tempfile)
+    printf "$outputContent" > "$outputTempFile"
+    outputContent=$(sort "$outputTempFile")
+    echo "$outputContent" > "$outputTempFile"
+
+    printf "<?php \n /* FILE AUTO GENERATED */ \n $PHP_ARRAY_VAR_NAME = [];\n" > "$outputTempFile"
+    echo "$outputContent" >> "$outputTempFile"
+    printf "\n return $PHP_ARRAY_VAR_NAME;\n" >> "$outputTempFile"
+
+    cat "$outputTempFile"
+
+    rm -f "$outputTempFile"
+}
