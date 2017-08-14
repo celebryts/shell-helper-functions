@@ -96,6 +96,10 @@ function _getOverriteConfigFileContent {
         elif [ "$FORMAT" == ".env" ]; then
             local line=$(echo $SHELL_ENV_NAME | sed -r "s/^$ENV_PREFIX//")
             line="$line=$SHELL_ENV_VALUE"
+        elif [ "$FORMAT" == "bash_env" ]; then
+            local line=$(echo $SHELL_ENV_NAME | sed -r "s/^$ENV_PREFIX//")
+            line=$(echo $line | sed -r "s/[-,]/_/g")
+            line="$line=$SHELL_ENV_VALUE"
         fi
 
         outputContent="$outputContent\n$line"
@@ -115,6 +119,8 @@ function _getOverriteConfigFileContent {
 
         rm -f "$outputTempFile"
     elif [ "$FORMAT" == ".env" ]; then
+        printf "$outputContent\n"
+    elif [ "$FORMAT" == "bash_env" ]; then
         printf "$outputContent\n"
     fi
 }
