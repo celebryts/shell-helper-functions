@@ -4,7 +4,7 @@
 # Messages functions
 #######################################################
 function _info {
-    echo -e "\e[34m[INFO]: $@\e[0m"
+    echo -e "\e[96m[INFO]: $@\e[0m"
 }
 function _warn {
     echo -e "\e[93m[WARN]: $@\e[0m"
