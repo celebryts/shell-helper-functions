@@ -30,7 +30,7 @@ function _waitAll()
         _info "Job done: $job"
     done
 
-    exit $ANY_FAIL
+    return $ANY_FAIL
 }
 
 
