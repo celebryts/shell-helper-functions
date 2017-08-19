@@ -22,12 +22,15 @@ function _success {
 #######################################################
 function _waitAll()
 {
+    local ANY_FAIL=0
     for job in `jobs -p`
     do
         _info "Waitting $job..."
-        wait $job
+        wait $job || ANY_FAIL=1
         _info "Job done: $job"
     done
+
+    exit $ANY_FAIL
 }
 
 
