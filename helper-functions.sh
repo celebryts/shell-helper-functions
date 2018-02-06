@@ -62,13 +62,13 @@ function _sendInfraMail {
         SILENT=1
     fi
 
-    if [[ ! $(_celyDoesSecretExists "clap,mail,mailgun,apiKey") && ! $(_celyDoesSecretExists "clap,mail,mailgun,domain") ]]; then
-        _err I cant send an infra-email since neither "clap,mail,mailgun,apiKey" nor "clap,mail,mailgun,domain" is set.
-        return
-    if
-
     local MAILGUN_KEY=$(_celyGetSecret clap,mail,mailgun,apiKey)
     local MAILGUN_DOMAIN=$(_celyGetSecret clap,mail,mailgun,domain)
+
+    if [[ "$MAILGUN_KEY" == "" || "$MAILGUN_DOMAIN" == "" ]]; then
+        _err I cant send an infra-email since nither "clap,mail,mailgun,apiKey" nor "clap,mail,mailgun,domain" is set.
+        return
+    fi
 
     curl -s --user "api:$MAILGUN_KEY" \
         "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" \
