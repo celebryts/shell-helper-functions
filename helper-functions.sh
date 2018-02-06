@@ -54,6 +54,35 @@ function _exit {
 #######################################################
 # Others helpers functions
 #######################################################
+function _sendInfraMail {
+    local SUBJECT=$1
+    local TEXT=$2
+    local SILENT=0
+    if [ ${3+x} ]; then
+        SILENT=1
+    fi
+
+    if [[ ! $(_celyDoesSecretExists "clap,mail,mailgun,apiKey") && ! $(_celyDoesSecretExists "clap,mail,mailgun,domain") ]]; then
+        _err I cant send an infra-email since neither "clap,mail,mailgun,apiKey" nor "clap,mail,mailgun,domain" is set.
+        return
+    if
+
+    curl -s --user 'api:$(clap,mail,mailgun,apiKey)' \
+        https://api.mailgun.net/v3/$(_celyGetSecret clap,mail,mailgun,domain)/messages \
+        -F from="infra@celebryts.com" \
+        -F to=faelsta@gmail.com \
+        -F subject="$SUBJECT" \
+        -F text="$TEXT" > /dev/null
+
+    if [ $SILENT == 0 ]; then
+        if [ $? == 0 ]; then
+            _success "Email sent successfully: \"$SUBJECT\""
+        else
+            _err "Failed to send email: \"$SUBJECT\""
+        fi
+    fi
+}
+
 function _waitFile {
     trap _sigint SIGINT SIGTERM SIGQUIT
     trap _exit EXIT
