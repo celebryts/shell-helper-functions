@@ -67,8 +67,11 @@ function _sendInfraMail {
         return
     if
 
-    curl -s --user 'api:$(clap,mail,mailgun,apiKey)' \
-        https://api.mailgun.net/v3/$(_celyGetSecret clap,mail,mailgun,domain)/messages \
+    local MAILGUN_KEY=$(_celyGetSecret clap,mail,mailgun,apiKey)
+    local MAILGUN_DOMAIN=$(_celyGetSecret clap,mail,mailgun,domain)
+
+    curl -s --user "api:$MAILGUN_KEY" \
+        "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" \
         -F from="infra@celebryts.com" \
         -F to=faelsta@gmail.com \
         -F subject="$SUBJECT" \
