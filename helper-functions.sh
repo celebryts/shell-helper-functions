@@ -58,14 +58,25 @@ function _sendInfraMail {
     local SUBJECT=$1
     local TEXT=$2
     local SILENT=0
+    local MAILGUN_KEY=
+    local MAILGUN_DOMAIN=
+
     if [ ${3+x} ]; then
-        SILENT=1
+        SILENT=$3
+    fi
+    if [ ${4+x} ]; then
+        MAILGUN_KEY=$4
+    fi
+    if [ ${5+x} ]; then
+        MAILGUN_DOMAIN=$5
     fi
 
-    source /data/secrets/cely.sh
-
-    local MAILGUN_KEY=$(_celyGetSecret clap,mail,mailgun,apiKey)
-    local MAILGUN_DOMAIN=$(_celyGetSecret clap,mail,mailgun,domain)
+    if [ "$MAILGUN_KEY" == "" ]; then
+        MAILGUN_KEY=$(_celyGetSecret clap,mail,mailgun,apiKey)
+    fi
+    if [ "$MAILGUN_DOMAIN" == "" ]; then
+        MAILGUN_DOMAIN=$(_celyGetSecret clap,mail,mailgun,domain)
+    fi
 
     if [[ "$MAILGUN_KEY" == "" || "$MAILGUN_DOMAIN" == "" ]]; then
         _err I cant send an infra-email since nither "clap,mail,mailgun,apiKey" nor "clap,mail,mailgun,domain" is set.
