@@ -148,7 +148,7 @@ function _celyDoesSecretExists {
 
     if [[ ! $ignoreOverrites && $(_getOverriteConfigFileContent CHECK_IF_SET $key) ]]; then
         echo 1
-    elif [[ ${CELY_SECRETS+x} && ${CELY_SECRETS[$key]+x} ]]; then
+    elif [ ${CELY_SECRETS[$key]+x} ]; then
         echo 1
     else 
         echo
