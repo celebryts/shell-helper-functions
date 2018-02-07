@@ -62,6 +62,8 @@ function _sendInfraMail {
         SILENT=1
     fi
 
+    source /data/secrets/cely.sh
+
     local MAILGUN_KEY=$(_celyGetSecret clap,mail,mailgun,apiKey)
     local MAILGUN_DOMAIN=$(_celyGetSecret clap,mail,mailgun,domain)
 
