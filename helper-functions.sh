@@ -80,7 +80,7 @@ function _sendInfraMail {
 
     if [[ "$MAILGUN_KEY" == "" || "$MAILGUN_DOMAIN" == "" ]]; then
         _err I cant send an infra-email since nither "clap,mail,mailgun,apiKey" nor "clap,mail,mailgun,domain" is set.
-        return
+        return 1
     fi
 
     curl -s --user "api:$MAILGUN_KEY" \
@@ -89,14 +89,17 @@ function _sendInfraMail {
         -F to=faelsta@gmail.com \
         -F subject="$SUBJECT" \
         -F text="$TEXT" > /dev/null
+    local CURL_EXIT_CODE=$?
 
     if [ $SILENT == 0 ]; then
-        if [ $? == 0 ]; then
+        if [ $CURL_EXIT_CODE == 0 ]; then
             _success "Email sent successfully: \"$SUBJECT\""
         else
             _err "Failed to send email: \"$SUBJECT\""
         fi
     fi
+
+    return $CURL_EXIT_CODE
 }
 
 function _waitFile {
