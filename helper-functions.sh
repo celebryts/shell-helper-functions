@@ -83,6 +83,8 @@ function _sendInfraMail {
         return 1
     fi
 
+    TEXT=$(printf "$TEXT")
+
     curl -s --user "api:$MAILGUN_KEY" \
         "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" \
         -F from="infra@celebryts.com" \
