@@ -54,6 +54,71 @@ function _exit {
 #######################################################
 # Others helpers functions
 #######################################################
+function _sendInfraMessage {
+    local SUBJECT=$1
+    local TEXT=$2
+    local SILENT=0
+    local MAILGUN_KEY=
+    local MAILGUN_DOMAIN=
+    local CATAPUSH_KEY=
+
+    if [ ${3+x} ]; then
+        SILENT=$3
+    fi
+    if [ ${4+x} ]; then
+        MAILGUN_KEY=$4
+    fi
+    if [ ${5+x} ]; then
+        MAILGUN_DOMAIN=$5
+    fi
+    if [ ${6+x} ]; then
+        CATAPUSH_KEY=$6
+    fi
+
+    _sendPushNotification "$SUBJECT: $TEXT" $SILENT "$CATAPUSH_KEY"
+    _sendInfraMail "$SUBJECT" "$TEXT" $SILENT "$MAILGUN_KEY" "$MAILGUN_KEY"
+}
+
+function _sendPushNotification {
+    local TEXT=$1
+    local SILENT=0
+    local CATAPUSH_KEY=
+
+    if [ ${2+x} ]; then
+        SILENT=$2
+    fi
+    if [ ${3+x} ]; then
+        CATAPUSH_KEY=$3
+    fi
+        
+    if [ "$CATAPUSH_KEY" == "" ]; then
+        CATAPUSH_KEY=$(_celyGetSecret catapush,accessToken)
+    fi
+
+    if [ "$CATAPUSH_KEY" == "" ]; then
+        _err I cant send a push notification since "catapush,accessToken" is set.
+        return 1
+    fi
+
+    curl -s --request POST \
+         --url https://api.catapush.com/1/messages \
+         --header 'accept: application/json' \
+         --header "authorization: Bearer $CATAPUSH_KEY" \
+         --header 'content-type: application/json' \
+         --data "{\"mobileAppId\":318,\"text\":\"$TEXT\",\"recipients\":[{\"identifier\":\"5511974449998\"}]}" > /dev/null
+
+    local CURL_EXIT_CODE=$?
+
+    if [ $SILENT == 0 ]; then
+        if [ $CURL_EXIT_CODE == 0 ]; then
+            _success "Push notification sent successfully."
+        else
+            _err "Failed to send push notification."
+        fi
+    fi
+
+    return $CURL_EXIT_CODE
+}
 function _sendInfraMail {
     local SUBJECT=$1
     local TEXT=$2
