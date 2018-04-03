@@ -60,7 +60,8 @@ function _sendInfraMessage {
     local SILENT=0
     local MAILGUN_KEY=
     local MAILGUN_DOMAIN=
-    local CATAPUSH_KEY=
+    local INSTAGRAM_USERNAME=
+    local INSTAGRAM_PASSWORD=
 
     if [ ${3+x} ]; then
         SILENT=$3
@@ -72,40 +73,49 @@ function _sendInfraMessage {
         MAILGUN_DOMAIN=$5
     fi
     if [ ${6+x} ]; then
-        CATAPUSH_KEY=$6
+        INSTAGRAM_USERNAME=$6
+    fi
+    if [ ${7+x} ]; then
+        INSTAGRAM_PASSWORD=$7
     fi
 
-    _sendPushNotification "$SUBJECT: $TEXT" $SILENT "$CATAPUSH_KEY"
+    _sendPushNotification "$SUBJECT: $TEXT" $SILENT "$INSTAGRAM_USERNAME" "$INSTAGRAM_PASSWORD"
     _sendInfraMail "$SUBJECT" "$TEXT" $SILENT "$MAILGUN_KEY" "$MAILGUN_KEY"
 }
 
 function _sendPushNotification {
     local TEXT=$1
     local SILENT=0
-    local CATAPUSH_KEY=
+    local INSTAGRAM_USERNAME=
+    local INSTAGRAM_PASSWORD=
 
     if [ ${2+x} ]; then
         SILENT=$2
     fi
     if [ ${3+x} ]; then
-        CATAPUSH_KEY=$3
-    fi
-        
-    if [ "$CATAPUSH_KEY" == "" ]; then
-        CATAPUSH_KEY=$(_celyGetSecret catapush,accessToken)
+        INSTAGRAM_USERNAME=$3
     fi
 
-    if [ "$CATAPUSH_KEY" == "" ]; then
-        _err I cant send a push notification since "catapush,accessToken" is set.
+    if [ ${4+x} ]; then
+        INSTAGRAM_PASSWORD=$4
+    fi
+
+    if [ "$INSTAGRAM_USERNAME" == "" ]; then
+        INSTAGRAM_USERNAME=$(_celyGetSecret "cely,instagram-bot,accounts,0,username")
+    fi
+
+    if [ "$INSTAGRAM_PASSWORD" == "" ]; then
+        INSTAGRAM_PASSWORD=$(_celyGetSecret "cely,instagram-bot,accounts,0,password")
+    fi
+
+    if [[ "$INSTAGRAM_USERNAME" == "" || "$INSTAGRAM_PASSWORD" == "" ]]; then
+        _err I cant send a push notification since "cely,instagram-bot,accounts,0,username" or "cely,instagram-bot,accounts,0,password" is not set.
         return 1
     fi
 
-    curl -s --request POST \
-         --url https://api.catapush.com/1/messages \
-         --header 'accept: application/json' \
-         --header "authorization: Bearer $CATAPUSH_KEY" \
-         --header 'content-type: application/json' \
-         --data "{\"mobileAppId\":318,\"text\":\"$TEXT\",\"recipients\":[{\"identifier\":\"5511974449998\"}]}" > /dev/null
+    curl -s 'https://instagram-chat.celebryts.com/send-message' \
+         -H 'content-type: application/json' \
+         --data-binary "{\"userName\":\"$INSTAGRAM_USERNAME\",\"password\":\"$INSTAGRAM_PASSWORD\",\"toUserId\":\"stavarengo86\",\"message\":\"$TEXT\"}" > /dev/null
 
     local CURL_EXIT_CODE=$?
 
