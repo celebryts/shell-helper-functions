@@ -39,15 +39,21 @@ function _waitAll()
 #######################################################
 _EXITING=0
 function _sigint {
+    if hash apachectl &>/dev/null; then
+        _info "Asking Apache to gracefully stop..."
+        apachectl -k graceful-stop
+    fi
+
     _EXITING=1
 }
 function _exit {
     _EXITING=1
     _info "Exiting..."
+    
     for job in `jobs -p`
     do
-        echo "   Killing job $job..."
-        kill $job 2> /dev/null
+        echo "   Sending SIGTERM to job $job..."
+        kill -SIGTERM $job 2> /dev/null
     done
 }
 
