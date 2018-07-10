@@ -45,7 +45,7 @@ function _waitAll()
 function __exiting {
     _info "Exiting..."
 
-    if [ $MAIN_PROCESS -gt 0 ] then
+    if [ $MAIN_PROCESS -gt 0 ]; then
         _info "Asking main process to gracefully stop..."
         kill -SIGTERM $MAIN_PROCESS
         MAIN_PROCESS=0
