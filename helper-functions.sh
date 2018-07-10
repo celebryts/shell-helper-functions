@@ -20,8 +20,13 @@ function _success {
 #######################################################
 # Jobs asynchronous functions
 #######################################################
+MAIN_PROCESS=0
 function _waitAll()
 {
+    if [ ${1+x} ]; then
+        MAIN_PROCESS=$1
+    fi
+
     local ANY_FAIL=0
     for job in `jobs -p`
     do
@@ -37,18 +42,29 @@ function _waitAll()
 #######################################################
 # Exit control functions
 #######################################################
-_EXITING=0
-function _sigint {
+function __exiting {
+    _info "Exiting..."
+
+    if [ $MAIN_PROCESS -gt 0 ] then
+        _info "Asking main process to gracefully stop..."
+        kill -SIGTERM $MAIN_PROCESS
+        MAIN_PROCESS=0
+    fi
+
     if hash apachectl &>/dev/null; then
         _info "Asking Apache to gracefully stop..."
         apachectl -k graceful-stop
     fi
+}
 
+_EXITING=0
+function _sigint {
+    __exiting
     _EXITING=1
 }
 function _exit {
+    __exiting
     _EXITING=1
-    _info "Exiting..."
     
     for job in `jobs -p`
     do
