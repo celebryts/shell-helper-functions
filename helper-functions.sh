@@ -123,15 +123,15 @@ function _sendPushNotification {
     fi
 
     if [ "$INSTAGRAM_USERNAME" == "" ]; then
-        INSTAGRAM_USERNAME=$(_celyGetSecret "cely,instagram-bot,accounts,0,username")
+        INSTAGRAM_USERNAME=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username")
     fi
 
     if [ "$INSTAGRAM_PASSWORD" == "" ]; then
-        INSTAGRAM_PASSWORD=$(_celyGetSecret "cely,instagram-bot,accounts,0,password")
+        INSTAGRAM_PASSWORD=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password")
     fi
 
     if [[ "$INSTAGRAM_USERNAME" == "" || "$INSTAGRAM_PASSWORD" == "" ]]; then
-        _err I cant send a push notification since "cely,instagram-bot,accounts,0,username" or "cely,instagram-bot,accounts,0,password" is not set.
+        _err I cant send a push notification since "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username" or "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password" is not set.
         return 1
     fi
 
