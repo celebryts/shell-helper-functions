@@ -77,10 +77,17 @@ function _exit {
 # Others helpers functions
 #######################################################
 function _dotSleep {
+    trap _sigint SIGINT SIGTERM SIGQUIT
+    trap _exit EXIT
+
     local SECONDS=$1
+
     for i in `seq 1 $SECONDS`; do
         echo -n "$i "
         sleep 1s
+        if [ "$_EXITING" -eq "0" ]; then
+            return
+        fi
     done
     echo "Done"
 }
