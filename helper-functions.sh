@@ -79,10 +79,10 @@ function _exit {
 function _dotSleep {
     local SECONDS=$1
     for i in `seq 1 $SECONDS`; do
-        printf "$i "
+        echo -n "$i "
         sleep 1s
     done
-    printf "Done\n"
+    echo "Done"
 }
 
 function _sendInfraMessage {
