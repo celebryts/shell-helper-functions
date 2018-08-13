@@ -85,7 +85,7 @@ function _dotSleep {
     for i in `seq 1 $SECONDS`; do
         echo -n "$i "
         sleep 1s
-        if [ "$_EXITING" -eq "0" ]; then
+        if [ ! "$_EXITING" -eq "0" ]; then
             return
         fi
     done
