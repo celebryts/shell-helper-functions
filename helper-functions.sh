@@ -76,6 +76,15 @@ function _exit {
 #######################################################
 # Others helpers functions
 #######################################################
+function _dotSleep {
+    local SECONDS=$1
+    for i in `seq 1 $SECONDS`; do
+        _info "$i "
+        sleep 1s
+    done
+    _info "Done\n"
+}
+
 function _sendInfraMessage {
     local SUBJECT=$1
     local TEXT=$2
