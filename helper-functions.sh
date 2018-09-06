@@ -88,7 +88,7 @@ function _sigint {
 function _exit {
     if [ "$?" != "0" ]; then
         _err "Last command in '$_LAST_SOURCE' on line '$_LAST_LINENO'\n$_LAST_CMD"
-        _showErrorMessageAndExist
+        _showErrorMessageAndExit
     fi
 
     __exiting
@@ -104,7 +104,7 @@ function _exit {
 #######################################################
 # Others helpers functions
 #######################################################
-function _showErrorMessageAndExist {
+function _showErrorMessageAndExit {
     local MSG=
     local SECONDS=7
 
