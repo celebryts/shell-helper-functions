@@ -42,6 +42,30 @@ function _waitAll()
 #######################################################
 # Exit control functions
 #######################################################
+_EXITING=0
+_LAST_CMD=
+_LAST_LINENO=
+_LAST_SOURCE=
+function ___debug() {
+    #echo "BASH_ARGC=$BASH_ARGC"
+    #echo "BASH_ARGV=$BASH_ARGV"
+    #echo "BASH_COMMAND=$BASH_COMMAND"
+    #echo "BASH_EXECUTION_STRING=$BASH_EXECUTION_STRING"
+    #echo "BASH_LINENO=$BASH_LINENO"
+    #echo "BASH_REMATCH=$BASH_REMATCH"
+    #echo "BASH_SOURCE=$BASH_SOURCE"
+    #echo "BASH_SUBSHELL=$BASH_SUBSHELL"
+
+    _LAST_CMD=$BASH_COMMAND
+    _LAST_LINENO=$BASH_LINENO
+    _LAST_SOURCE=$BASH_SOURCE
+
+    if [ "$_EXITING" != "0" ]; then
+        exit
+    fi
+}
+trap ___debug DEBUG
+
 function __exiting {
     _info "Exiting..."
 
@@ -57,12 +81,16 @@ function __exiting {
     fi
 }
 
-_EXITING=0
 function _sigint {
     __exiting
     _EXITING=1
 }
 function _exit {
+    if [ "$?" != "0" ]; then
+        _err "Last command in '$_LAST_SOURCE' on line '$_LAST_LINENO'\n$_LAST_CMD"
+        _showErrorMessageAndExist
+    fi
+
     __exiting
     _EXITING=1
     
@@ -76,6 +104,32 @@ function _exit {
 #######################################################
 # Others helpers functions
 #######################################################
+function _showErrorMessageAndExist {
+    local MSG=
+    local SECONDS=7
+
+    if [ "$#" == 1 ]; then
+        if [[ "$1" =~ ^[0-9]+$ ]] ; then
+            local SECONDS=$1
+        else
+            local MSG=$1
+        fi
+    elif [ "$#" == 2 ]; then
+        local SECONDS=$1
+        local MSG=$2
+    fi
+
+    if [ "$MSG" != "" ]; then
+        _err "$MSG"
+    fi
+
+    _err "Exiting in $SECONDS seconds..."
+
+    _dotSleep $SECONDS
+
+    exit
+}
+
 function _dotSleep {
     trap _sigint SIGINT SIGTERM SIGQUIT
     trap _exit EXIT
