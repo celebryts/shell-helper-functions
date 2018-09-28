@@ -178,36 +178,52 @@ function _sendInfraMessage {
 function _sendPushNotification {
     local TEXT=$1
     local SILENT=0
-    local INSTAGRAM_USERNAME=
-    local INSTAGRAM_PASSWORD=
+#    local INSTAGRAM_USERNAME=
+#    local INSTAGRAM_PASSWORD=
 
     if [ ${2+x} ]; then
         SILENT=$2
     fi
-    if [ ${3+x} ]; then
-        INSTAGRAM_USERNAME=$3
-    fi
+#    if [ ${3+x} ]; then
+#        INSTAGRAM_USERNAME=$3
+#    fi
+#
+#    if [ ${4+x} ]; then
+#        INSTAGRAM_PASSWORD=$4
+#    fi
+#
+#    if [ "$INSTAGRAM_USERNAME" == "" ]; then
+#        INSTAGRAM_USERNAME=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username")
+#    fi
+#
+#    if [ "$INSTAGRAM_PASSWORD" == "" ]; then
+#        INSTAGRAM_PASSWORD=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password")
+#    fi
+#
+#    if [[ "$INSTAGRAM_USERNAME" == "" || "$INSTAGRAM_PASSWORD" == "" ]]; then
+#        _err I cant send a push notification since "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username" or "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password" is not set.
+#        return 1
+#    fi
+#
+#    curl -s 'https://instagram-chat.celebryts.com/send-message' \
+#         -H 'content-type: application/json' \
+#         --data-binary "{\"userName\":\"$INSTAGRAM_USERNAME\",\"password\":\"$INSTAGRAM_PASSWORD\",\"toUserId\":\"stavarengo86\",\"message\":\"$TEXT\"}" > /dev/null
 
-    if [ ${4+x} ]; then
-        INSTAGRAM_PASSWORD=$4
-    fi
+    #curl -s https://onesignal.com/api/v1/notification \
+    #     -X POST \
+    #     --include \
+    #     --header "Content-Type: application/json; charset=utf-8" \
+    #     --header "Authorization: Basic ZmVlYTVlNDUtYmI4MC00ZDc0LWFhZjAtMGMzMjg1ODk2Njg5" \
+    #     --data-binary "{            \"app_id\": \"9042566a-2e83-41cc-89d0-9e5f403c6cf3\",             \"contents\": {                \"en\": \"$TEXT\"},                 \"included_segments\": [\"All\"]            }"
 
-    if [ "$INSTAGRAM_USERNAME" == "" ]; then
-        INSTAGRAM_USERNAME=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username")
-    fi
 
-    if [ "$INSTAGRAM_PASSWORD" == "" ]; then
-        INSTAGRAM_PASSWORD=$(_celyGetSecret "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password")
-    fi
+    curl --include \
+         --request POST \
+         --header "Content-Type: application/json; charset=utf-8" \
+         --header "Authorization: Basic ZmVlYTVlNDUtYmI4MC00ZDc0LWFhZjAtMGMzMjg1ODk2Njg5" \
+         --data-binary "{\"app_id\": \"9042566a-2e83-41cc-89d0-9e5f403c6cf3\", \"contents\": {\"en\": \"$TEXT\"}, \"included_segments\": [\"All\"]}" \
+         https://onesignal.com/api/v1/notifications
 
-    if [[ "$INSTAGRAM_USERNAME" == "" || "$INSTAGRAM_PASSWORD" == "" ]]; then
-        _err I cant send a push notification since "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,username" or "Cely\\\\InstagramClient\\\\ConfigProvider,Cely\\\\InstagramClient\\\\Middleware\\\\InstagramRequestErrorHandler,accounts-credentials,0,password" is not set.
-        return 1
-    fi
-
-    curl -s 'https://instagram-chat.celebryts.com/send-message' \
-         -H 'content-type: application/json' \
-         --data-binary "{\"userName\":\"$INSTAGRAM_USERNAME\",\"password\":\"$INSTAGRAM_PASSWORD\",\"toUserId\":\"stavarengo86\",\"message\":\"$TEXT\"}" > /dev/null
 
     local CURL_EXIT_CODE=$?
 
