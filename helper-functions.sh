@@ -216,6 +216,11 @@ function _sendPushNotification {
     #     --header "Authorization: Basic ZmVlYTVlNDUtYmI4MC00ZDc0LWFhZjAtMGMzMjg1ODk2Njg5" \
     #     --data-binary "{            \"app_id\": \"9042566a-2e83-41cc-89d0-9e5f403c6cf3\",             \"contents\": {                \"en\": \"$TEXT\"},                 \"included_segments\": [\"All\"]            }"
 
+    local CURR_ENV=$CELY_ENV
+    if [ "$CELY_ENV" == "production" ]; then
+        CURR_ENV=prod
+    fi
+    TEXT="[$CURR_ENV] $TEXT"
 
     curl --include \
          --request POST \
