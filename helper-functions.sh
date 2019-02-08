@@ -4,16 +4,20 @@
 # Messages functions
 #######################################################
 function _info {
-    echo -e "\e[96m[INFO]: $@\e[0m"
+    #echo -e "\e[96m[INFO]: $@\e[0m"
+    echo -e "\e[96m[INFO]: ${@//$'\n'/\\n[INFO]: }\e[0m"
 }
 function _warn {
-    echo -e "\e[93m[WARN]: $@\e[0m"
+    #echo -e "\e[93m[WARN]: $@\e[0m"
+    echo -e "\e[93m[WARN]: ${@//$'\n'/\\n[WARN]: }\e[0m"
 }
 function _err {
-    echo -e "\e[91m[ERR]: $@\e[0m"
+    #echo -e "\e[91m[ERR]: $@\e[0m"
+    echo -e "\e[91m[ERR]: ${@//$'\n'/\\n[ERR]: }\e[0m"
 }
 function _success {
-    echo -e "\e[92m[SUCCESS]: $@\e[0m"
+    #echo -e "\e[92m[SUCCESS]: $@\e[0m"
+    echo -e "\e[92m[SUCCESS]: ${@//$'\n'/\\n[SUCCESS]: }\e[0m"
 }
 
 
