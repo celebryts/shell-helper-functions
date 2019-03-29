@@ -68,7 +68,9 @@ function ___debug() {
         exit
     fi
 }
-trap ___debug DEBUG
+if [ "$0" == "bash" ]; then
+    trap ___debug DEBUG
+fi
 
 function __exiting {
     _info "Exiting..."
