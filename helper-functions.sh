@@ -282,7 +282,8 @@ function _sendInfraMail {
     curl -s --user "api:$MAILGUN_KEY" \
         "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" \
         -F from="infra@celebryts.com" \
-        -F to=faelsta@gmail.com \
+        -F to=rafael@celebryts.com \
+        -F to=renan@celebryts.com \
         -F subject="$SUBJECT" \
         -F text="$TEXT" > /dev/null
     local CURL_EXIT_CODE=$?
