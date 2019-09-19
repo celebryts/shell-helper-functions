@@ -4,20 +4,20 @@
 # Messages functions
 #######################################################
 function _info {
-    #echo -e "\e[96m[INFO]: $@\e[0m"
-    echo -e "\e[96m[INFO]: ${@//$'\n'/\\n[INFO]: }\e[0m"
+    echo -e "\e[96m[INFO]: $@\e[0m"
+    #echo -e "\e[96m[INFO]: ${@//$'\n'/\\n[INFO]: }\e[0m"
 }
 function _warn {
-    #echo -e "\e[93m[WARN]: $@\e[0m"
-    echo -e "\e[93m[WARN]: ${@//$'\n'/\\n[WARN]: }\e[0m"
+    echo -e "\e[93m[WARN]: $@\e[0m"
+    #echo -e "\e[93m[WARN]: ${@//$'\n'/\\n[WARN]: }\e[0m"
 }
 function _err {
-    #echo -e "\e[91m[ERR]: $@\e[0m"
-    echo -e "\e[91m[ERR]: ${@//$'\n'/\\n[ERR]: }\e[0m"
+    echo -e "\e[91m[ERR]: $@\e[0m" 1>&2;
+    #echo -e "\e[91m[ERR]: ${@//$'\n'/\\n[ERR]: }\e[0m"
 }
 function _success {
-    #echo -e "\e[92m[SUCCESS]: $@\e[0m"
-    echo -e "\e[92m[SUCCESS]: ${@//$'\n'/\\n[SUCCESS]: }\e[0m"
+    echo -e "\e[92m[SUCCESS]: $@\e[0m"
+    #echo -e "\e[92m[SUCCESS]: ${@//$'\n'/\\n[SUCCESS]: }\e[0m"
 }
 
 
@@ -282,8 +282,7 @@ function _sendInfraMail {
     curl -s --user "api:$MAILGUN_KEY" \
         "https://api.mailgun.net/v3/$MAILGUN_DOMAIN/messages" \
         -F from="infra@celebryts.com" \
-        -F to=rafael@celebryts.com \
-        -F to=renan@celebryts.com \
+        -F to=tech@celebryts.com \
         -F subject="$SUBJECT" \
         -F text="$TEXT" > /dev/null
     local CURL_EXIT_CODE=$?
